@@ -1,0 +1,33 @@
+#!/bin/bash
+# Script to check cpu usage and email if high
+#
+PATHS="/"
+HOSTNAME=$(hostname)
+CRITICAL=90
+WARNING=50
+MAILCRIT="user@email.com"
+MAILWARN="user@email.com"
+mkdir -p /home/roger/cpuhist
+LOGFILE=/home/roger/cpuhist/cpusage-`date +%h+d+y`.log
+touch $LOGFILE
+
+for path in $PATHS
+do
+        CPULOAD=`top -b -n 2 d1 | grep "Cpu(s)" | tail -n1 | awk '{print $2}' | awk -F . '{print $1}'`
+echo $CPULOAD
+
+if [ -n $WARNING -a -n $CRITICAL ]; then
+if [ "$CPULOAD" -ge "$WARNING" -a "$CPULOAD" -lt "$CRITICAL" ]; then
+echo "`date "+%F %H:%M:%S"` WARNING - $CPULOAD on Host $HOSTNAME" >> $LOGFILE
+echo "Waring CPU Load on $CPULOAD Host is $HOSTNAME" | mail -s "CPU Load is Warning" $MAILWARN
+exit 1
+elif [ "$CPULOAD" -ge "$CRITICAL" ]; then
+echo "`date "+%F %H:%M:%S"` CRITICAL - $CPULOAD on Host $HOSTNAME" >> $LOGFILE
+echo "Critical CPU Load on $CPULOAD Host is $HOSTNAME" | mail -s "CPU Load is Critical" $MAILCRIT
+exit 2
+else
+echo "`date "+%F %H:%M:%S"` OK - $CPULOAD on  $HOSTNAME" >> $LOGFILE
+exit 0
+fi
+fi
+done
