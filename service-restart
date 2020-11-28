@@ -1,0 +1,7 @@
+#!/bin/bash
+systemctl stop vpnd
+sleep 10
+systemctl start vpnd
+sleep 10
+systemctl status vpnd > /tmp/vpnserv-status.txt
+mailx -s"AirWatch Status - `hostname` - `date`" user@email.com < /tmp/vpnserv-status.txt
