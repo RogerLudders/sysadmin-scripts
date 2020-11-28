@@ -1,0 +1,5 @@
+#!/bin/bash
+# Script to generate CPU load which can be useful for testing purposes.
+# Multiple instances can be started for increased load.
+# To stop the kill the the PIDs.
+yes > /dev/null &
