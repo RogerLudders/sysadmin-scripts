@@ -1,0 +1,19 @@
+#!/bin/bash
+# Check the the CPU usage on the VPND process and recyle if threshold is triggered.
+# Crontab: */5 * * * * /home/roger/bin/vpndchk >/dev/null 2>&1
+PSCHK=`ps aux | grep yes  | awk '{print $3}' | awk -F . '{print $1}'`
+TRIGGER=90
+LOGFILE=/home/roger/bin/vpndchk.log
+echo $PSCHK
+
+if [ "$PSCHK" -ge "$TRIGGER" ]; then
+echo "$PSCHK High CPU"
+echo "`date "+%F %H:%M:%S"` TRIGGER CPU - $PSCHK" >> $LOGFILE
+#Put the recycle script here
+
+elif [ "$PSCHK" -le "$TRIGGER" ]; then
+echo "$PSCHK Normal CPU"
+echo "`date "+%F %H:%M:%S"` NORMAL CPU - $PSCHK" >> $LOGFILE
+fi
+
+exit
